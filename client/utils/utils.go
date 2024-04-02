@@ -34,20 +34,38 @@ func IniciarConfiguracion(filePath string) *globals.Config {
 	return config
 }
 
-func LeerConsola() {
+func LeerConsola() []string {
 	// Leer de la consola
 	reader := bufio.NewReader(os.Stdin)
 	log.Println("Ingrese los mensajes")
-	text, _ := reader.ReadString('\n')
-	log.Print(text)
+	var lineas []string
+	//text, _ := reader.ReadString('\n')
+	//log.Print(text)
+	for {
+		text, _ := reader.ReadString('\n')
+		//log.Print(len(text))
+		//text == "\r\n"
+		//len(text) == 1
+		if len(text) == 1 {
+			log.Print("Carga finalizada")
+			break
+		}
+		log.Print(text)
+		lineas = append(lineas, text)
+	}
+	//len(text) == 0 parece que siempre lee un espacio al menos
+	//log.Print(lineas)
+	return lineas
+
 }
 
-func GenerarYEnviarPaquete() {
+func GenerarYEnviarPaquete(mensajes []string, ip string, puerto int) {
 	paquete := Paquete{}
 	// Leemos y cargamos el paquete
-
-	log.Printf("paqute a enviar: %+v", paquete)
+	paquete.Valores = mensajes
+	log.Printf("paquete a enviar: %+v", paquete)
 	// Enviamos el paqute
+	EnviarPaquete(ip, puerto, paquete)
 }
 
 func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
